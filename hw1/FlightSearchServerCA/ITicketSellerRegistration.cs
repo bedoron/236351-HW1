@@ -12,7 +12,7 @@ namespace FlightSearchServerCA
     public interface ITicketSellerRegistration
     {
 
-        [WebInvoke(Method = "PUT", UriTemplate = "registeration")]
+        [WebInvoke(Method = "PUT", UriTemplate = "registeration/{name}")]
         [OperationContract]
         void RegisterSeller(Uri request, string name);
     }

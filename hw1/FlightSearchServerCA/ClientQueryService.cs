@@ -10,13 +10,13 @@ namespace FlightSearchServerCA
 
     public class ClientQueryService : IClientQueryService
     {
-        TicketSellerRegistration regiteration;
+        //TicketSellerRegistration regiteration;
         static int id = 1000;
-        public ClientQueryService(TicketSellerRegistration Regiteration)
-        {
-            regiteration = Regiteration;
+        //public ClientQueryService(TicketSellerRegistration Regiteration)
+        //{
+        //    regiteration = Regiteration;
 
-        }
+        //}
         public Flights GetFlights(string src, string dst, string date)
         {
 
