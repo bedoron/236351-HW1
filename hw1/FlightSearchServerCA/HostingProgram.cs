@@ -14,6 +14,7 @@ namespace FlightSearchServerCA
                 typeof(ClientQueryService), new Uri("http://localhost:50000/Services")))
             {
                 host.Open();
+                
                 Console.ReadKey();
             }
         }
