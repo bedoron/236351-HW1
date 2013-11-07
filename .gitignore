@@ -9,5 +9,6 @@
 *.gpState 
 Thumbs.db 
 *.~m2
+hw1/*.suo
 hw1/**/bin/*
 hw1/**/obj/*
