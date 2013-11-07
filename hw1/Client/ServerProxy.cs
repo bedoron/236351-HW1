@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ServiceModel.Web;
 using System.Globalization;
+using System.ServiceModel;
 
 namespace Client
 {
@@ -24,7 +25,25 @@ namespace Client
             channel = cf.CreateChannel();
         }
 
-        public void executionLoop() {
+        public void run()
+        {
+            try
+            {
+                executionLoop();
+            }
+            catch (EndpointNotFoundException)
+            {
+                Console.WriteLine("Ticket Selling Server is down");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("{0}", e.Message.ToString());
+                Console.WriteLine("=========================================");
+                Console.WriteLine("{0}", e.GetType());
+            }
+        }
+
+        private void executionLoop() {
             Console.WriteLine("Enter a command or q to quit");
             do
             {
@@ -60,7 +79,7 @@ namespace Client
                     }
                     catch (NullReferenceException)
                     {
-                        Console.WriteLine("Tickets Selling Server is down");
+                        Console.WriteLine("Failed creating WCF Object");
                         break;
                     }
                 }

@@ -18,7 +18,7 @@ namespace Client
           
             ServerProxy app = new ServerProxy(args[0]);
 
-            app.executionLoop();
+            app.run();
         }
     }
 }
