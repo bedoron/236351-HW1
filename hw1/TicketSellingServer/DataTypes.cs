@@ -37,6 +37,12 @@ namespace TicketSellingServer
 
     }
 
+    public class Reservation
+    {
+        public int reservationID;
+        public DateTime date;
+        public string flightNumber;
+    }
     [CollectionDataContract]
     public class Flights : List<Flight>
     {

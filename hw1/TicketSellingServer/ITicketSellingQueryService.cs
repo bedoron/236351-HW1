@@ -14,13 +14,13 @@ namespace TicketSellingServer
         [OperationContract]
         Flights GetFlights(string src, string dst, string date);
 
-        [WebInvoke(Method = "POST", UriTemplate = "seller/{seller}")]
+        [WebInvoke(Method = "POST", UriTemplate = "makeReservation")]
         [OperationContract]
-        int MakeReservation(string seller, ReservationRequest request);
+        int MakeReservation(ReservationRequest request);
 
-        [WebInvoke(Method = "DELETE", UriTemplate = "seller/{seller}/{reservationID}")]
+        [WebInvoke(Method = "DELETE", UriTemplate = "cancelReservation")]
         [OperationContract]
-        void CancelReservation(string seller, string reservationID);
+        void CancelReservation(string reservationID);
 
     }
 }
