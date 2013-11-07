@@ -16,7 +16,7 @@ namespace TicketSellingServer
 
         [WebInvoke(Method = "POST", UriTemplate = "makeReservation")]
         [OperationContract]
-        int MakeReservation(ReservationRequest request);
+        int MakeReservation(FlightSearchReservationRequest request);
 
         [WebInvoke(Method = "DELETE", UriTemplate = "cancelReservation")]
         [OperationContract]

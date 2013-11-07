@@ -8,13 +8,17 @@ using System.IO;
 
 namespace TicketSellingServer
 {
-
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public class TicketSellingQueryService : ITicketSellingQueryService
     {
         static int indexer = 0;
         private Flights flights;
-        private List<Reservation> reservations = new List<Reservation>();
-
+        private List<TicketSearchReservation> reservations;
+        public TicketSellingQueryService(string filePath)
+        {
+            reservations = new List<TicketSearchReservation>();
+            getFlights(filePath);
+        }
         public void getFlights(string filePath){
             flights = new Flights();
             StreamReader reader = new StreamReader(filePath);
@@ -53,29 +57,43 @@ namespace TicketSellingServer
             return suitableFlights;
         }
 
-        public int MakeReservation(ReservationRequest request)
+        public int MakeReservation(FlightSearchReservationRequest request)
         {
             foreach(Flight flight in flights){
                 if (flight.flightNumber.Equals(request.flightNumber) && flight.date.Equals(request.date))
                 {
+                    if (flight.seats == 0) throw new FaultException("no seats available");
                     flight.seats--;
-                    Reservation reservation = new Reservation();
+                    TicketSearchReservation reservation = new TicketSearchReservation();
                     reservation.flightNumber = request.flightNumber;
                     reservation.date = request.date;
                     reservation.reservationID = ++indexer;
                     reservations.Add(reservation);
                     return indexer;
                 }
-                throw new Exception();
+                throw new FaultException("no such flight");
             }
             
-            //TODO: implement - return the ID of the new resevation
             return 0;
         }
         public void CancelReservation(string reservationID)
         {
-
-     
+            foreach (TicketSearchReservation reservation in reservations)
+            {
+                if (reservation.reservationID == Convert.ToInt32(reservationID))
+                {
+                    foreach (Flight flight in flights)
+                    {
+                        if (flight.flightNumber.Equals(reservation.flightNumber) && flight.date.Equals(reservation.date))
+                        {
+                            flight.seats++;
+                        }
+                    }
+                    reservations.Remove(reservation);
+                    return;
+                }
+            }
+            throw new FaultException("no such reservation");
         }
 
     }
