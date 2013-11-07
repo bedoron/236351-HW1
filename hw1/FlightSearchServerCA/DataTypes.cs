@@ -10,8 +10,6 @@ namespace FlightSearchServerCA
     public class ReservationRequest
     {
         [DataMember]
-        public Uri id { get; set; }
-        [DataMember]
         public string flightNumber{ get; set;}
         [DataMember]
         public DateTime date{ get; set;}
@@ -21,7 +19,7 @@ namespace FlightSearchServerCA
     public class Flight
     {
         [DataMember]
-        public Uri id { get; set; }
+        public string name { get; set; }
         [DataMember]
         public string flightNumber { get; set; }
         [DataMember]

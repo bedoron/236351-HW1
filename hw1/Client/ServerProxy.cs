@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.ServiceModel.Web;
 using System.Globalization;
 using System.ServiceModel;
+using System.Net;
 
 namespace Client
 {
@@ -16,6 +17,11 @@ namespace Client
 
         Uri serverUri;
         FlightSearchServerCA.IClientQueryService channel;
+
+        private static DateTime GetDate(string strDate) {
+            DateTime date = DateTime.ParseExact(strDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            return date;
+        }
 
         public ServerProxy(string uri)
         {
@@ -56,7 +62,11 @@ namespace Client
 
                     try
                     {
-                        if (command.Equals("search"))
+                        if (command.Equals(""))
+                        {
+                            continue;
+                        }
+                        else if (command.Equals("search"))
                         {
                             search(parameters);
                         }
@@ -82,6 +92,23 @@ namespace Client
                         Console.WriteLine("Failed creating WCF Object");
                         break;
                     }
+                    catch (FormatException)
+                    {
+                        Console.WriteLine("Invalid time format, use dd/MM/yyyy format");
+                    }
+                    catch (Exception e)
+                    {
+                        if (e.InnerException is WebException)
+                        {
+                            HttpWebResponse resp = (HttpWebResponse)((WebException)e.InnerException).Response;
+                            Console.WriteLine("Failed, {0}", resp.StatusDescription);
+                        }
+                        else
+                        {
+                            throw e;
+                        }
+                        
+                    }
                 }
             } while (true);
         }
@@ -98,28 +125,14 @@ namespace Client
                 string src = input[1];
                 string dst = input[2];
                 string strDate = input[3];
-                try
-                {
-                    DateTime date = DateTime.ParseExact(strDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                } 
-                catch(FormatException) 
-                {
-                    Console.WriteLine("Invalid time format, use dd/MM/yyyy format");
-                    return;
-                }
-                FlightSearchServerCA.Flights result;
-                try
-                {
-                    result = channel.GetFlights(src, dst, strDate);
-                } catch(WebFaultException e) {
-                    Console.WriteLine("Service failed: {0}", e.Reason);
-                    return;
-                }
+
+                GetDate(strDate);
+
+                FlightSearchServerCA.Flights result = channel.GetFlights(src, dst, strDate);
 
                 // TODO: sort data here ? we F*ck up the client
                 foreach (FlightSearchServerCA.Flight flight in result)
                 {
-                    // TODO: print by spec
                     Console.WriteLine("{0} {1} {2} seats {3}$", flight.name, flight.flightNumber, flight.seats, flight.price);
                 }
             }
@@ -127,12 +140,48 @@ namespace Client
 
         void reserve(string[] input)
         {
-            Console.WriteLine("Reserve");
+            if (input.Length != 4)
+            {
+                Console.WriteLine("Invalid parameters");
+                Console.WriteLine("reserve <seller> <flight> <dd/MM/yyyy>");
+            }
+            else
+            {
+                FlightSearchServerCA.ReservationRequest reservationRequest = 
+                    new FlightSearchServerCA.ReservationRequest();
+
+                string seller = input[1];
+                string flight = input[2];
+                DateTime date = GetDate(input[3]);
+
+
+                reservationRequest.date = date;
+                reservationRequest.flightNumber = flight;
+
+                int reservationId = channel.MakeReservation(seller, reservationRequest);
+                Console.WriteLine("OK, reservation ID: {0}", reservationId);
+            }
         }
 
         void cancel(string[] input) 
         {
-            Console.WriteLine("Cancel");
+            if (input.Length == 1) // I have no idea why this is required but I saw it in the excersize manual
+            {
+                Console.WriteLine("Invalid parameters");
+                Console.WriteLine("cancel <seller> <reservation id>");
+            }
+            else
+            {
+                string seller = input[1];
+                string reservationID = "";
+                if (input.Length >= 3)
+                {
+                    reservationID = input[2];
+                }
+
+                channel.CancelReservation(seller, reservationID);
+                Console.WriteLine("OK");                
+            }
         }
     }
 }
