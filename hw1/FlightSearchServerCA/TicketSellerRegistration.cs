@@ -9,7 +9,7 @@ using System.ServiceModel.Web;
 
 namespace FlightSearchServerCA
 {
-    class TicketSellerRegistration : ITicketSellerRegistration
+    public class TicketSellerRegistration : ITicketSellerRegistration
     {
         public ConcurrentDictionary<string, ITicketSellingQueryService> sellers { get; set; }
         public TicketSellerRegistration()

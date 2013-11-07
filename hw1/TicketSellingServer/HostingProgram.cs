@@ -12,19 +12,19 @@ namespace TicketSellingServer
     {
         static void Main(string[] args)
         {
-           // WebChannelFactory<ITicketSellerRegistration> cf = new WebChannelFactory<ITicketSellerRegistration>( new Uri(args[1]));
+            WebChannelFactory<ITicketSellerRegistration> cf = new WebChannelFactory<ITicketSellerRegistration>( new Uri(args[1]));
 
-            //ITicketSellerRegistration channel = cf.CreateChannel();
+            ITicketSellerRegistration channel = cf.CreateChannel();
             string address = @"http://localhost:" + args[0] + @"/Services";
 
             TicketSellingQueryService ticketSelling = new TicketSellingQueryService(args[2]);
             using (ServiceHost host = new ServiceHost(
                 ticketSelling, new Uri(address)))
             {
-                //host.AddServiceEndpoint(typeof(ITicketSellingQueryService), new BasicHttpBinding(), "TicketSellingQueryService"); 
+                host.AddServiceEndpoint(typeof(ITicketSellingQueryService), new BasicHttpBinding(), "TicketSellingQueryService"); 
 
                 
-                //channel.RegisterSeller(new Uri(address), "air-liberman"); 
+                channel.RegisterSeller(new Uri(address), "air-liberman"); 
                 host.Open();
                 Console.ReadKey();
             }
