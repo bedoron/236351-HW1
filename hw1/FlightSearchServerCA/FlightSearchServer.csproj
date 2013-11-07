@@ -51,9 +51,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ITicketSellerRegistration.cs" />
     <Compile Include="TicketSellerRegistration.cs" />
+    <Compile Include="TicketSellingQueryService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="output.config" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

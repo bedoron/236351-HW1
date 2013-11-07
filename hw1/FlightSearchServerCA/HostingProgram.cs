@@ -10,8 +10,9 @@ namespace FlightSearchServerCA
     {
         static void Main(string[] args)
         {
+            TicketSellerRegistration regiteration = new TicketSellerRegistration();
             using (ServiceHost host = new ServiceHost(
-                typeof(ClientQueryService), new Uri("http://localhost:50000/Services")))
+                regiteration, new Uri(@"http://localhost:"+args[1]+@"/Services")))
             {
                 host.Open();
                 

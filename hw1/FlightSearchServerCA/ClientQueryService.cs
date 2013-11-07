@@ -10,10 +10,16 @@ namespace FlightSearchServerCA
 
     public class ClientQueryService : IClientQueryService
     {
+        TicketSellerRegistration regiteration;
         static int id = 1000;
+        public ClientQueryService(TicketSellerRegistration Regiteration)
+        {
+            regiteration = Regiteration;
 
+        }
         public Flights GetFlights(string src, string dst, string date)
         {
+
             Console.WriteLine("PIHO.....................................................");
             Flight flight = new Flight();
             flight.date = new DateTime(1212, 12, 12);

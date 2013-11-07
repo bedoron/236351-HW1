@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HostingProgram.cs" />
+    <Compile Include="ITicketSellerRegistration.cs" />
     <Compile Include="TicketSellingQueryService.cs" />
     <Compile Include="DataTypes.cs" />
     <Compile Include="ITicketSellingQueryService.cs" />
@@ -52,12 +53,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\FlightSearchServerCA\FlightSearchServer.csproj">
-      <Project>{a0c3059a-6302-483f-8f8d-7670a356714a}</Project>
-      <Name>FlightSearchServer</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
