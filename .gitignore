@@ -1,3 +1,11 @@
 *.pdb
+*bin 
+*obj 
+*suo 
+*.user 
+*.tmp 
+*.TMP 
+*.Load *.gpState 
+Thumbs.db *.~m2
 hw1/**/bin/*
 hw1/**/obj/*
