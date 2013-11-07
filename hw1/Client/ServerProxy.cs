@@ -120,7 +120,7 @@ namespace Client
                 foreach (FlightSearchServerCA.Flight flight in result)
                 {
                     // TODO: print by spec
-                    Console.WriteLine("{0} {1}", flight.price, flight.seats);
+                    Console.WriteLine("{0} {1} {2} seats {3}$", flight.name, flight.flightNumber, flight.seats, flight.price);
                 }
             }
         }
