@@ -7,10 +7,8 @@ using System.Web;
 namespace TicketSellingServer
 {
     [DataContract]
-    public class ReservationRequest
+    public class FlightSearchReservationRequest
     {
-        [DataMember]
-        public Uri id { get; set; }
         [DataMember]
         public string flightNumber{ get; set;}
         [DataMember]
@@ -20,8 +18,6 @@ namespace TicketSellingServer
     [DataContract]
     public class Flight
     {
-        [DataMember]
-        public Uri id { get; set; }
         [DataMember]
         public string flightNumber { get; set; }
         [DataMember]
@@ -37,7 +33,7 @@ namespace TicketSellingServer
 
     }
 
-    public class Reservation
+    public class TicketSearchReservation
     {
         public int reservationID;
         public DateTime date;

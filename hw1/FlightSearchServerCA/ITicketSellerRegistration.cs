@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 namespace FlightSearchServerCA
 {
     [ServiceContract]
-    interface ITicketSellerRegistration
+    public interface ITicketSellerRegistration
     {
         [WebInvoke(Method = "PUT", UriTemplate = "registeration")]
         [OperationContract]
-        void RegisterSeller(Uri request);
+        void RegisterSeller(Uri request, string name);
     }
 }

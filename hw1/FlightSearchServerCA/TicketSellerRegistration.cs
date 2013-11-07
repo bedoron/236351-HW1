@@ -8,7 +8,7 @@ namespace FlightSearchServerCA
 {
     class TicketSellerRegistration : ITicketSellerRegistration
     {
-        public void RegisterSeller(Uri request)
+        public void RegisterSeller(Uri request, string name)
         {
             throw new NotImplementedException();
         }
