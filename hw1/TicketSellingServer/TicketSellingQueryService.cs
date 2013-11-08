@@ -54,6 +54,8 @@ namespace TicketSellingServer
                     }
                 }
             }
+
+            suitableFlights.Sort();
             return suitableFlights;
         }
 

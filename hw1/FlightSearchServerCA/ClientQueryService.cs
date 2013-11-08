@@ -13,32 +13,44 @@ namespace FlightSearchServerCA
 
         public Flights GetFlights(string src, string dst, string date)
         {
-            Flights queryResult = new Flights();
-            //FlightSearchServer.Instance.
-            return queryResult;
-            //Console.WriteLine("PIHO.....................................................");
-            //Flight flight = new Flight();
-            //flight.date = new DateTime(1212, 12, 12);
-            //flight.dst = "SUDAN";
-            //flight.flightNumber = "AL45";
-            //flight.name = "Air-Liberman";
-            //flight.price = 100;
-            //flight.seats = 4096;
-            //flight.src = "TLV";
+            Flights flights = null;
+            try
+            {
+                flights = FlightSearchServer.Instance.QueryFlights(src, dst, date);
+            }
+            catch (Exception e)
+            {
+                WebOperationContext.Current.OutgoingResponse.SetStatusAsNotFound(e.Message);
+            }
 
-            //Flights flights = new Flights();
-            //flights.Add(flight);
-            //return flights;
+            return flights;
         }
 
         public int MakeReservation(string seller, ReservationRequest request)
         {
-            Console.WriteLine("Seller: {0}\n\tdate: {1}\n\tflight: {2}",seller, request.date.ToString(), request.flightNumber);
-            return 2046;
+            int reservationID = 0;
+            try
+            {
+                reservationID = FlightSearchServer.Instance.MakeReservation(seller, request);
+            }
+            catch (Exception e)
+            {
+                WebOperationContext.Current.OutgoingResponse.SetStatusAsNotFound(e.Message);
+            }
+
+            return reservationID;
         }
-        public void CancelReservation(string seller, string reservationID)
+        public void CancelReservation(string seller, string CancelReservation)
         {
-            //WebOperationContext.Current.OutgoingResponse.SetStatusAsNotFound("Invalid seller");
+            try
+            {
+                FlightSearchServer.Instance.CancelReservation(seller, CancelReservation);
+            }
+            catch (Exception e)
+            {
+                WebOperationContext.Current.OutgoingResponse.SetStatusAsNotFound(e.Message);
+            }
+
         }
 
     }

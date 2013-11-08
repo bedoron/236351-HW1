@@ -16,7 +16,7 @@ namespace TicketSellingServer
 
     }
     [DataContract]
-    public class Flight
+    public class Flight : IComparable
     {
         [DataMember]
         public string flightNumber { get; set; }
@@ -31,7 +31,20 @@ namespace TicketSellingServer
         [DataMember]
         public DateTime date { get; set; }
 
-    }
+
+        public int CompareTo(object obj)
+        {
+            Flight otherFlight = (Flight)obj;
+            if (price < otherFlight.price) { return -1; }
+            else if (price > otherFlight.price) { return 1; }
+            else
+            {
+                if (seats > otherFlight.seats) { return -1; }
+                else if (seats < otherFlight.seats) { return 1;} 
+                    else{return flightNumber.CompareTo(otherFlight.flightNumber);}
+            }
+        }
+}
 
     public class TicketSearchReservation
     {
