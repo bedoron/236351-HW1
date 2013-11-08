@@ -91,6 +91,7 @@ namespace FlightSearchServerCA
                 catch (FaultException e)
                 {
                     FlightSearchServerException fsse = new FlightSearchServerException(e.Reason.ToString());
+                    Console.WriteLine("Seller {0} failed with {1}", seller.Key, e.Reason.ToString());
                 }
                 catch (Exception e)
                 {
