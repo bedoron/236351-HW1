@@ -70,23 +70,85 @@ namespace FlightSearchServerCA
             Flights flights = new Flights();
             foreach (var seller in sellers)
             {
-                //Flights tmpFlights = (Flights)seller.Value.GetFlights(src, dst, date);
-                //foreach (var response in tmpFlights)
-                //{
-                    
-                //}
+                try
+                {
+                    TicketSellingServer.Flights sellerFlights =
+                        seller.Value.GetFlights(src, dst, date); // DEAL WITH EXCEPTIONS HERE
+                    foreach (var sellerFlight in sellerFlights)
+                    {
+                        Flight flight = new Flight();
+                        flight.date = sellerFlight.date;
+                        flight.dst = sellerFlight.dst;
+                        flight.flightNumber = sellerFlight.flightNumber;
+                        flight.price = sellerFlight.price;
+                        flight.seats = sellerFlight.seats;
+                        flight.src = sellerFlight.src;
+
+                        flight.name = seller.Key;
+                        flights.Add(flight);
+                    }
+                }
+                catch (FaultException e)
+                {
+                    FlightSearchServerException fsse = new FlightSearchServerException(e.Reason.ToString());
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Seller {0} {1} malfunction: \n{2}", seller.Key, "search", e.Message.ToString());
+                    ITicketSellingQueryService victim;
+                    sellers.TryRemove(seller.Key, out victim);
+                }
             }
             return flights;
         }
 
         public int MakeReservation(string seller, ReservationRequest request)
         {
-            return -1;
+            if(!sellers.ContainsKey(seller)) 
+            {
+                throw new FlightSearchServerException("unknown seller");
+            }
+            TicketSellingServer.FlightSearchReservationRequest fsrr = 
+                new TicketSellingServer.FlightSearchReservationRequest();
+            int reservationID = 0;    
+            try {
+                reservationID = sellers[seller].MakeReservation(fsrr);
+            } 
+            catch(FaultException e) 
+            {
+                throw new FlightSearchServerException(e.Reason.ToString());
+            } 
+            catch(Exception e) 
+            {
+                Console.WriteLine("Seller {0} {1} malfunction: \n{2}", seller, "Make reservation", e.Message.ToString());
+                ITicketSellingQueryService victim;
+                sellers.TryRemove(seller, out victim);
+            }
+            return reservationID;
         }
 
         public void CancelReservation(string seller, string reservationID)
         {
-            return;
+            if (!sellers.ContainsKey(seller))
+            {
+                throw new FlightSearchServerException("unknown seller");
+            }
+            TicketSellingServer.FlightSearchReservationRequest fsrr =
+                new TicketSellingServer.FlightSearchReservationRequest();
+            try
+            {
+                sellers[seller].CancelReservation(reservationID);
+            }
+            catch (FaultException e)
+            {
+                throw new FlightSearchServerException(e.Reason.ToString());
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Seller {0} {1} malfunction: \n{2}", seller, "Cancel reservation",e.Message.ToString());
+                ITicketSellingQueryService victim;
+                sellers.TryRemove(seller, out victim);
+            }
         }
 
     }
