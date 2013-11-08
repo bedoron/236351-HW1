@@ -15,9 +15,10 @@ namespace FlightSearchServerCA
         public void RegisterSeller(Uri request, string name)
         {
             WebChannelFactory<ITicketSellingQueryService> cf = new WebChannelFactory<ITicketSellingQueryService>(request);
-
+            
             ITicketSellingQueryService channel = cf.CreateChannel();
             FlightSearchServer.Instance.sellers[name] = channel;
+            Console.WriteLine("PIHO11!!!!!!!!!!!!!!!!");
         }
     }
 }

@@ -21,10 +21,13 @@ namespace TicketSellingServer
             using (ServiceHost host = new ServiceHost(
                 ticketSelling, new Uri(address)))
             {
-                host.AddServiceEndpoint(typeof(ITicketSellingQueryService), new BasicHttpBinding(), "TicketSellingQueryService"); 
+                host.AddServiceEndpoint(typeof(ITicketSellingQueryService), new BasicHttpBinding(), "TicketSellingQueryService");
 
-                
-                channel.RegisterSeller(new Uri(address), "air-liberman"); 
+                try
+                {
+                    //channel.RegisterSeller(new Uri(address), "air-liberman");
+                }
+                catch (ProtocolException e) { Console.WriteLine(e.Message); }
                 host.Open();
                 Console.ReadKey();
             }
