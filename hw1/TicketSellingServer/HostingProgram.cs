@@ -25,7 +25,7 @@ namespace TicketSellingServer
 
                 try
                 {
-                    //channel.RegisterSeller(new Uri(address), "air-liberman");
+                    channel.RegisterSeller(new Uri(address), "air-liberman");
                 }
                 catch (ProtocolException e) { Console.WriteLine(e.Message); }
                 host.Open();
