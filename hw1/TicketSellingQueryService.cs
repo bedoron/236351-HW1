@@ -15,6 +15,72 @@ namespace TicketSellingServer
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="FlightQuery", Namespace="http://schemas.datacontract.org/2004/07/TicketSellingServer")]
+    public partial class FlightQuery : object, System.Runtime.Serialization.IExtensibleDataObject
+    {
+        
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        private string dateField;
+        
+        private string dstField;
+        
+        private string srcField;
+        
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData
+        {
+            get
+            {
+                return this.extensionDataField;
+            }
+            set
+            {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string date
+        {
+            get
+            {
+                return this.dateField;
+            }
+            set
+            {
+                this.dateField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string dst
+        {
+            get
+            {
+                return this.dstField;
+            }
+            set
+            {
+                this.dstField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string src
+        {
+            get
+            {
+                return this.srcField;
+            }
+            set
+            {
+                this.srcField = value;
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.CollectionDataContractAttribute(Name="Flights", Namespace="http://schemas.datacontract.org/2004/07/TicketSellingServer", ItemName="Flight")]
     public class Flights : System.Collections.Generic.List<TicketSellingServer.Flight>
     {
@@ -33,6 +99,8 @@ namespace TicketSellingServer
         private string dstField;
         
         private string flightNumberField;
+        
+        private string nameField;
         
         private int priceField;
         
@@ -88,6 +156,19 @@ namespace TicketSellingServer
             set
             {
                 this.flightNumberField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string name
+        {
+            get
+            {
+                return this.nameField;
+            }
+            set
+            {
+                this.nameField = value;
             }
         }
         
@@ -190,10 +271,10 @@ public interface ITicketSellingQueryService
 {
     
     [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ITicketSellingQueryService/GetFlights", ReplyAction="http://tempuri.org/ITicketSellingQueryService/GetFlightsResponse")]
-    TicketSellingServer.Flights GetFlights(string src, string dst, string date);
+    TicketSellingServer.Flights GetFlights(TicketSellingServer.FlightQuery flightQuery);
     
     [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ITicketSellingQueryService/GetFlights", ReplyAction="http://tempuri.org/ITicketSellingQueryService/GetFlightsResponse")]
-    System.Threading.Tasks.Task<TicketSellingServer.Flights> GetFlightsAsync(string src, string dst, string date);
+    System.Threading.Tasks.Task<TicketSellingServer.Flights> GetFlightsAsync(TicketSellingServer.FlightQuery flightQuery);
     
     [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ITicketSellingQueryService/MakeReservation", ReplyAction="http://tempuri.org/ITicketSellingQueryService/MakeReservationResponse")]
     int MakeReservation(TicketSellingServer.FlightSearchReservationRequest request);
@@ -242,14 +323,14 @@ public partial class TicketSellingQueryServiceClient : System.ServiceModel.Clien
     {
     }
     
-    public TicketSellingServer.Flights GetFlights(string src, string dst, string date)
+    public TicketSellingServer.Flights GetFlights(TicketSellingServer.FlightQuery flightQuery)
     {
-        return base.Channel.GetFlights(src, dst, date);
+        return base.Channel.GetFlights(flightQuery);
     }
     
-    public System.Threading.Tasks.Task<TicketSellingServer.Flights> GetFlightsAsync(string src, string dst, string date)
+    public System.Threading.Tasks.Task<TicketSellingServer.Flights> GetFlightsAsync(TicketSellingServer.FlightQuery flightQuery)
     {
-        return base.Channel.GetFlightsAsync(src, dst, date);
+        return base.Channel.GetFlightsAsync(flightQuery);
     }
     
     public int MakeReservation(TicketSellingServer.FlightSearchReservationRequest request)

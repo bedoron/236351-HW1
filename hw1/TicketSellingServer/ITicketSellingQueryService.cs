@@ -11,7 +11,7 @@ namespace TicketSellingServer
     public interface ITicketSellingQueryService
     {
         [OperationContract]
-        Flights GetFlights(string src, string dst, string date);
+        Flights GetFlights(FlightQuery flightQuery);
 
         [OperationContract]
         int MakeReservation(FlightSearchReservationRequest request);

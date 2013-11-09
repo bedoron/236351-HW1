@@ -5,6 +5,8 @@ using System.Linq;
 using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
+using TicketSellingServer;
+
 
 namespace FlightSearchServerCA
 {
@@ -24,7 +26,7 @@ namespace FlightSearchServerCA
         }
 
         public ConcurrentDictionary<string, ITicketSellingQueryService> sellers =
-            new ConcurrentDictionary<string, ITicketSellingQueryService>(Environment.ProcessorCount, Environment.ProcessorCount * 2);
+           new ConcurrentDictionary<string, ITicketSellingQueryService>(Environment.ProcessorCount, Environment.ProcessorCount * 2);
 
         private ServiceHost tsrHost;
         private ServiceHost cqsHost;
@@ -67,37 +69,49 @@ namespace FlightSearchServerCA
 
         public Flights QueryFlights(string src, string dst, string date) 
         {
+            Console.WriteLine("FlightSearchServer: " + dst + " " + src + " " + date);
             Flights flights = new Flights();
             foreach (var seller in sellers)
             {
-                try
+                FlightQuery fq = new FlightQuery();
+                fq.src = src;
+                fq.dst = dst;
+                fq.date = date;
+                using (new OperationContextScope((IContextChannel)seller.Value))
                 {
-                    TicketSellingServer.Flights sellerFlights =
-                        seller.Value.GetFlights(src, dst, date); // DEAL WITH EXCEPTIONS HERE
-                    foreach (var sellerFlight in sellerFlights)
+                    try
                     {
-                        Flight flight = new Flight();
-                        flight.date = sellerFlight.date;
-                        flight.dst = sellerFlight.dst;
-                        flight.flightNumber = sellerFlight.flightNumber;
-                        flight.price = sellerFlight.price;
-                        flight.seats = sellerFlight.seats;
-                        flight.src = sellerFlight.src;
 
-                        flight.name = seller.Key;
-                        flights.Add(flight);
+                        Flights sellerFlights =
+                            seller.Value.GetFlights(fq); // DEAL WITH EXCEPTIONS HERE
+
+                        //Console.WriteLine("sellerFlights: " + sellerFlights. + " " + src + " " + date);
+                        foreach (var sellerFlight in sellerFlights)
+                        {
+                            Flight flight = new Flight();
+                            flight.date = sellerFlight.date;
+                            flight.dst = sellerFlight.dst;
+                            flight.flightNumber = sellerFlight.flightNumber;
+                            flight.price = sellerFlight.price;
+                            flight.seats = sellerFlight.seats;
+                            flight.src = sellerFlight.src;
+
+                            flight.name = seller.Key;
+                            flights.Add(flight);
+                        }
+
                     }
-                }
-                catch (FaultException e)
-                {
-                    FlightSearchServerException fsse = new FlightSearchServerException(e.Reason.ToString());
-                    Console.WriteLine("Seller {0} failed with {1}", seller.Key, e.Reason.ToString());
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine("Seller {0} {1} malfunction: \n{2}", seller.Key, "search", e.Message.ToString());
-                    ITicketSellingQueryService victim;
-                    sellers.TryRemove(seller.Key, out victim);
+                    catch (FaultException e)
+                    {
+                        FlightSearchServerException fsse = new FlightSearchServerException(e.Reason.ToString());
+                        Console.WriteLine("Seller {0} failed with {1}", seller.Key, e.Reason.ToString());
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("Seller {0} {1} malfunction: \n{2}", seller.Key, "search", e.Message.ToString());
+                        ITicketSellingQueryService victim;
+                        sellers.TryRemove(seller.Key, out victim);
+                    }
                 }
             }
             return flights;
@@ -109,8 +123,8 @@ namespace FlightSearchServerCA
             {
                 throw new FlightSearchServerException("unknown seller");
             }
-            TicketSellingServer.FlightSearchReservationRequest fsrr = 
-                new TicketSellingServer.FlightSearchReservationRequest();
+            FlightSearchReservationRequest fsrr = 
+                new FlightSearchReservationRequest();
             int reservationID = 0;    
             try {
                 reservationID = sellers[seller].MakeReservation(fsrr);
@@ -134,8 +148,8 @@ namespace FlightSearchServerCA
             {
                 throw new FlightSearchServerException("unknown seller");
             }
-            TicketSellingServer.FlightSearchReservationRequest fsrr =
-                new TicketSellingServer.FlightSearchReservationRequest();
+            FlightSearchReservationRequest fsrr =
+                new FlightSearchReservationRequest();
             try
             {
                 sellers[seller].CancelReservation(reservationID);

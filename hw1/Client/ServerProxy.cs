@@ -7,6 +7,8 @@ using System.ServiceModel.Web;
 using System.Globalization;
 using System.ServiceModel;
 using System.Net;
+using TicketSellingServer;
+using FlightSearchServerCA;
 
 namespace Client
 {
@@ -128,10 +130,10 @@ namespace Client
 
                 GetDate(strDate);
 
-                FlightSearchServerCA.Flights result = channel.GetFlights(src, dst, strDate);
+                Flights1 result = channel.GetFlights(src, dst, strDate);
 
                 // TODO: sort data here ? we F*ck up the client
-                foreach (FlightSearchServerCA.Flight flight in result)
+                foreach (Flight1 flight in result)
                 {
                     Console.WriteLine("{0} {1} {2} seats {3}$", flight.name, flight.flightNumber, flight.seats, flight.price);
                 }

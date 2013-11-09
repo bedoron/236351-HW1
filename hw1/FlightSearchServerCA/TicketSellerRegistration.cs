@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
-using TicketSellingServer;
 using System.ServiceModel.Web;
 using System.ServiceModel;
+using TicketSellingServer;
+using Registeration;
+
 
 namespace FlightSearchServerCA
 {
@@ -14,11 +16,15 @@ namespace FlightSearchServerCA
     {
         public void RegisterSeller(Uri request, string name)
         {
-            WebChannelFactory<ITicketSellingQueryService> cf = new WebChannelFactory<ITicketSellingQueryService>(request);
+            ChannelFactory<ITicketSellingQueryService> httpFactory =
+        new ChannelFactory<ITicketSellingQueryService>("BasicHttpBinding_ITicketSellingQueryService");
+                // create channel proxy for endpoint
+                ITicketSellingQueryService channel = httpFactory.CreateChannel();
+                FlightSearchServer.Instance.sellers[name] = channel;
+
+                Console.WriteLine("PIHO11!!!!!!!!!!!!!!!!");
             
-            ITicketSellingQueryService channel = cf.CreateChannel();
-            FlightSearchServer.Instance.sellers[name] = channel;
-            Console.WriteLine("PIHO11!!!!!!!!!!!!!!!!");
+
         }
     }
 }

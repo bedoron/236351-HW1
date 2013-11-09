@@ -4,6 +4,7 @@ using System.Linq;
 using System.ServiceModel;
 using System.ServiceModel.Web;
 using System.Web;
+using TicketSellingServer;
 
 namespace FlightSearchServerCA
 {
@@ -12,7 +13,7 @@ namespace FlightSearchServerCA
     {
         [WebGet(UriTemplate = "flight?src={src}&dst={dst}&date={date}")]
         [OperationContract]
-        Flights GetFlights(string src, string dst, string date);
+        Flights1 GetFlights(string src, string dst, string date);
 
         [WebInvoke(Method = "POST", UriTemplate = "seller/{seller}")]
         [OperationContract]

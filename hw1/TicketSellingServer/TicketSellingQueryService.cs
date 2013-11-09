@@ -11,11 +11,13 @@ namespace TicketSellingServer
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public class TicketSellingQueryService : ITicketSellingQueryService
     {
+        private string companyName;
         static int indexer = 0;
         private Flights flights;
         private List<TicketSearchReservation> reservations;
-        public TicketSellingQueryService(string filePath)
+        public TicketSellingQueryService(string filePath, string name)
         {
+            companyName = name;
             reservations = new List<TicketSearchReservation>();
             getFlights(filePath);
         }
@@ -28,6 +30,7 @@ namespace TicketSellingServer
                 Flight flight = new Flight();
                 string[] members = line.Split(' ');
                 flight.flightNumber = members[0];
+                flight.name = companyName;
                 flight.src = members[1];
                 flight.dst = members[2];
                 flight.date = DateTime.Parse(members[3]);
@@ -40,14 +43,15 @@ namespace TicketSellingServer
         }
 
 
-        public Flights GetFlights(string src, string dst, string date)
+        public Flights GetFlights(FlightQuery flightQuery)
         {
+            Console.WriteLine("innnnnnnnnnnnnnnnn");
             Flights suitableFlights = new Flights();
             foreach (Flight flight in flights)
             {
-                if (flight.src.Equals(src) && flight.dst.Equals(dst))
+                if (flight.src.Equals(flightQuery.src) && flight.dst.Equals(flightQuery.dst))
                 {
-                    DateTime dt = DateTime.Parse(date);
+                    DateTime dt = DateTime.Parse(flightQuery.date);
                     if (dt.Equals(flight.date))
                     {
                         suitableFlights.Add(flight);

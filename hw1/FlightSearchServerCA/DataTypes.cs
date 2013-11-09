@@ -15,8 +15,16 @@ namespace FlightSearchServerCA
         public DateTime date{ get; set;}
 
     }
+
+    [CollectionDataContract]
+    public class Flights1 : List<Flight1>
+    {
+
+        public Flights1() { }
+        public Flights1(List<Flight1> flights) : base(flights) { }
+    }
     [DataContract]
-    public class Flight
+    public class Flight1
     {
         [DataMember]
         public string name { get; set; }
@@ -32,14 +40,7 @@ namespace FlightSearchServerCA
         public int price { get; set; }
         [DataMember]
         public DateTime date { get; set; }
-
     }
 
-    [CollectionDataContract]
-    public class Flights : List<Flight>
-    {
-        public Flights() { }
-        public Flights(List<Flight> flights) : base(flights) { }
-    }
-
+    
 }
