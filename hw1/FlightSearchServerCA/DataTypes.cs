@@ -6,6 +6,9 @@ using System.Web;
 
 namespace FlightSearchServerCA
 {
+    /// <summary>
+    /// Describe a reservation from client
+    /// </summary>
     [DataContract]
     public class ReservationRequest
     {
@@ -16,15 +19,25 @@ namespace FlightSearchServerCA
 
     }
 
+    /// <summary>
+    /// Collection of flights which were retrieved by search queries who where delegated
+    /// to all the sellers.
+    /// This list is propogated to the client as a result
+    /// </summary>
     [CollectionDataContract]
-    public class Flights1 : List<Flight1>
+    public class QueryResultFlights : List<QueryResultFlight>
     {
 
-        public Flights1() { }
-        public Flights1(List<Flight1> flights) : base(flights) { }
+        public QueryResultFlights() { }
+        public QueryResultFlights(List<QueryResultFlight> flights) : base(flights) { }
     }
+
+    /// <summary>
+    /// A single Flight search query result. this class will be contained within the list
+    /// QueryResultFlights.
+    /// </summary>
     [DataContract]
-    public class Flight1
+    public class QueryResultFlight
     {
         [DataMember]
         public string name { get; set; }
@@ -40,6 +53,26 @@ namespace FlightSearchServerCA
         public int price { get; set; }
         [DataMember]
         public DateTime date { get; set; }
+
+        /// <summary>
+        /// This function is used to sort the list by spec requirement.
+        /// Client is dumb so sorting is done on server
+        /// </summary>
+        /// <param name="obj">Right hand object to test</param>
+        /// <returns>-1 if this is smaller than obj, otherwise 1</returns>
+        public int CompareTo(object obj)
+        {
+            QueryResultFlight otherFlight = (QueryResultFlight)obj;
+
+            if (price < otherFlight.price) { return -1; }
+            else if (price > otherFlight.price) { return 1; }
+            else
+            {
+                if (seats > otherFlight.seats) { return -1; }
+                else if (seats < otherFlight.seats) { return 1; }
+                else { return flightNumber.CompareTo(otherFlight.flightNumber); }
+            }
+        }
     }
 
     

@@ -130,10 +130,10 @@ namespace Client
 
                 GetDate(strDate);
 
-                Flights1 result = channel.GetFlights(src, dst, strDate);
+                QueryResultFlights result = channel.GetFlights(src, dst, strDate);
 
                 // TODO: sort data here ? we F*ck up the client
-                foreach (Flight1 flight in result)
+                foreach (QueryResultFlight flight in result)
                 {
                     Console.WriteLine("{0} {1} {2} seats {3}$", flight.name, flight.flightNumber, flight.seats, flight.price);
                 }
