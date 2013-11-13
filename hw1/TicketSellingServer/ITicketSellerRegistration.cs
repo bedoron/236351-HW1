@@ -12,6 +12,7 @@ namespace Registeration
     public interface ITicketSellerRegistration
     {
 
+        // REST method - for registration - seller to flight server
         [WebInvoke(Method = "PUT", UriTemplate = "registeration/{name}")]
         [OperationContract]
         void RegisterSeller(Uri request, string name);

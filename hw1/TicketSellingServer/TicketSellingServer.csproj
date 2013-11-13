@@ -46,10 +46,11 @@
   <ItemGroup>
     <Compile Include="HostingProgram.cs" />
     <Compile Include="ITicketSellerRegistration.cs" />
-    <Compile Include="TicketSellingQueryService.cs" />
+    <Compile Include="TicketSellingQueryLogic.cs" />
     <Compile Include="DataTypes.cs" />
     <Compile Include="ITicketSellingQueryService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TicketSellingQueryService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

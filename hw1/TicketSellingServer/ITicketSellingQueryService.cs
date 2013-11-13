@@ -17,7 +17,7 @@ namespace TicketSellingServer
         int MakeReservation(FlightSearchReservationRequest request);
 
         [OperationContract]
-        void CancelReservation(string reservationID);
+        void CancelReservation(int reservationID);
 
     }
 }

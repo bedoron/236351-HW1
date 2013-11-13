@@ -24,7 +24,7 @@ namespace TicketSellingServer
         [DataMember]
         public string dst { get; set; }
         [DataMember]
-        public string date { get; set; }
+        public DateTime date { get; set; }
 
     }
 
@@ -45,10 +45,8 @@ namespace TicketSellingServer
         public Flights(List<Flight> flights) : base(flights) { }
     }
     [DataContract]
-    public class Flight : IComparable
+    public class Flight
     {
-        [DataMember]
-        public string name { get; set; }
         [DataMember]
         public string flightNumber { get; set; }
         [DataMember]
@@ -61,20 +59,6 @@ namespace TicketSellingServer
         public int price { get; set; }
         [DataMember]
         public DateTime date { get; set; }
-
-
-        public int CompareTo(object obj)
-        {
-            Flight otherFlight = (Flight)obj;
-            if (price < otherFlight.price) { return -1; }
-            else if (price > otherFlight.price) { return 1; }
-            else
-            {
-                if (seats > otherFlight.seats) { return -1; }
-                else if (seats < otherFlight.seats) { return 1; }
-                else { return flightNumber.CompareTo(otherFlight.flightNumber); }
-            }
-        }
     }
 
 
