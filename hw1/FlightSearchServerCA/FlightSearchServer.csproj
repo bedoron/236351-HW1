@@ -48,7 +48,7 @@
   <ItemGroup>
     <Compile Include="ClientQueryService.cs" />
     <Compile Include="DataTypes.cs" />
-    <Compile Include="FlightSearchServer.cs" />
+    <Compile Include="FlightSearchLogic.cs" />
     <Compile Include="FlightSearchServerException.cs" />
     <Compile Include="HostingProgram.cs" />
     <Compile Include="IClientQueryService.cs" />
@@ -64,7 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="output.config" />
+    <None Include="ClassDiagram1.cd" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

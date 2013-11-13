@@ -1,0 +1,130 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="FlightSearchServerCA.ClientQueryService" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="3" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAABEAAAAAAAAAAAAAAAAEAAAAAAAAA=</HashCode>
+      <FileName>ClientQueryService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="FlightSearchServerCA.ReservationRequest" Collapsed="true">
+    <Position X="6.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAACA=</HashCode>
+      <FileName>DataTypes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FlightSearchServerCA.QueryResultFlights" Collapsed="true">
+    <Position X="4.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DataTypes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FlightSearchServerCA.QueryResultFlight" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="3" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAAAAQAAAAAAAIAAAAEAgAAAAACAQAAACA=</HashCode>
+      <FileName>DataTypes.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="FlightSearchServerCA.FlightSearchLogic" Collapsed="true">
+    <Position X="3" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAkAAAAAAAQABBAAAAAAAAABAAACEwEAAAAAEAAA=</HashCode>
+      <FileName>FlightSearchLogic.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FlightSearchServerCA.FlightSearchServerException" Collapsed="true">
+    <Position X="6.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>FlightSearchServerException.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FlightSearchServerCA.HostingProgram" Collapsed="true">
+    <Position X="8.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>HostingProgram.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FlightSearchServerCA.TicketSellerRegistration" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="3" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>TicketSellerRegistration.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="TicketSellingServer.FlightQuery" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="8.75" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAQABAAAAAAgAAAAAAAgAEAAACAQIAAAA=</HashCode>
+      <FileName>TicketSellingQueryService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="TicketSellingServer.Flights" Collapsed="true">
+    <Position X="8.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>TicketSellingQueryService.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TicketSellingServer.Flight" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="8.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAFAAAAAAAAQABAAAAAAgIAAAAIAgAEAAACAQIABCA=</HashCode>
+      <FileName>TicketSellingQueryService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="TicketSellingServer.FlightSearchReservationRequest" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="9.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAEAAAAAQIABCA=</HashCode>
+      <FileName>TicketSellingQueryService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="TicketSellingQueryServiceClient" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="4.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAABEAAAAAEAAAAACAAAAEAAAAAAAAA=</HashCode>
+      <FileName>TicketSellingQueryService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Interface Name="FlightSearchServerCA.IClientQueryService" Collapsed="true">
+    <Position X="3" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAABEAAAAAAAAAAAAAAAAEAAAAAAAAA=</HashCode>
+      <FileName>IClientQueryService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Registeration.ITicketSellerRegistration" Collapsed="true">
+    <Position X="4.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ITicketSellerRegistration.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ITicketSellingQueryService" Collapsed="true">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAABEAAAAAEAAAAACAAAAEAAAAAAAAA=</HashCode>
+      <FileName>TicketSellingQueryService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ITicketSellingQueryServiceChannel" Collapsed="true">
+    <Position X="0.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>TicketSellingQueryService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

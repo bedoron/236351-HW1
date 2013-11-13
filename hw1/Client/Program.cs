@@ -16,7 +16,7 @@ namespace Client
                 return;
             }
           
-            ServerProxy app = new ServerProxy(args[0]);
+            ServerProxy app = new ServerProxy(@"http://" + args[0]);
 
             app.run();
         }

@@ -28,7 +28,7 @@ namespace FlightSearchServerCA
             }
 
 
-            FlightSearchServer fss = FlightSearchServer.Instance; // DO NOT REMOVE THIS (THREAD CORRECTNESS)
+            FlightSearchLogic fss = FlightSearchLogic.Instance; // DO NOT REMOVE THIS (THREAD CORRECTNESS)
             fss.Initialize(args[0], args[1]); // Host services
             fss.run(); // wait till death
         }

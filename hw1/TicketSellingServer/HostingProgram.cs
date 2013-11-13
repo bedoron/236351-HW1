@@ -13,16 +13,19 @@ namespace TicketSellingServer
     {
         static void Main(string[] args)
         {
+            string url = null;
             // Check the input:
             try
             {
+                url = @"http://" + args[1];
                 Convert.ToInt32(args[0]);
-                new Uri(args[1]);
+                new Uri(url);
                 new StreamReader(args[2]);
             }
             catch (Exception e)
             {
                 Console.WriteLine("Bad arguments: " + e.Message);
+                return;
             }
 
             // Read arguments
@@ -30,7 +33,7 @@ namespace TicketSellingServer
             TicketSellingQueryLogic.Instance.Initialize(args[2], args[3]);
 
             // Create REST client
-            WebChannelFactory<ITicketSellerRegistration> cf = new WebChannelFactory<ITicketSellerRegistration>(new Uri(args[1]));
+            WebChannelFactory<ITicketSellerRegistration> cf = new WebChannelFactory<ITicketSellerRegistration>(new Uri(url));
             ITicketSellerRegistration channel = cf.CreateChannel();
 
             using (ServiceHost host = new ServiceHost(

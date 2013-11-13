@@ -93,6 +93,8 @@ namespace TicketSellingServer
                 flights.Add(flight);
                 line = reader.ReadLine();
             }
+            // Close the file
+            reader.Close();
 
         }
 
@@ -146,10 +148,9 @@ namespace TicketSellingServer
                     reservations.Add(reservation);
                     return reservation.reservationID;
                 }
-                throw new Exception("no such flight");
+                
             }
-
-            return 0;
+            throw new Exception("no such flight");
         }
 
         /// <summary>

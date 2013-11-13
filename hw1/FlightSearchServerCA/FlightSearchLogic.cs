@@ -14,17 +14,17 @@ namespace FlightSearchServerCA
     /// Business logic class of Search server.
     /// this class encapsulates all business logic which. 
     /// </summary>
-    public sealed class FlightSearchServer
+    public sealed class FlightSearchLogic
     {
         // This is ok as long as we call instance BEFORE anything else
-        private static readonly FlightSearchServer instance = new FlightSearchServer();
+        private static readonly FlightSearchLogic instance = new FlightSearchLogic();
 
-        private FlightSearchServer() { }
+        private FlightSearchLogic() { }
 
         /// <summary>
         /// Singleton getter/setter
         /// </summary>
-        public static FlightSearchServer Instance
+        public static FlightSearchLogic Instance
         {
             get
             {
@@ -69,8 +69,8 @@ namespace FlightSearchServerCA
         /// <param name="sellerPort">Port for sellers registration publishing server</param>
         public void Initialize(string clientPort, string sellerPort)
         {
-            tsrHost = new ServiceHost(typeof(TicketSellerRegistration), new Uri(@"http://localhost:" + sellerPort + @"/Services"));
-            cqsHost = new ServiceHost(typeof(ClientQueryService), new Uri(@"http://localhost:" + clientPort + @"/Services"));
+            tsrHost = new ServiceHost(typeof(TicketSellerRegistration), new Uri(@"http://localhost:" + sellerPort + @"/Services/FlightsSearchReg"));
+            cqsHost = new ServiceHost(typeof(ClientQueryService), new Uri(@"http://localhost:" + clientPort + @"/Services/FlightsSearch"));
 
             isInitialized = true;
         }
@@ -112,52 +112,55 @@ namespace FlightSearchServerCA
         /// <param name="dst">Destination of flight</param>
         /// <param name="date">Date of flight</param>
         /// <returns>Flights from all sellers which match the input criterias</returns>
-        public Flights QueryFlights(string src, string dst, string date) 
+        public QueryResultFlights QueryFlights(string src, string dst, string date) 
         {
             Console.WriteLine("FlightSearchServer: " + dst + " " + src + " " + date);
-            
-            Flights flights = new Flights();
-            foreach (var seller in sellers)
+
+            QueryResultFlights flights = new QueryResultFlights();
+            foreach (var seller in sellers.Keys)
             {
                 FlightQuery fq = new FlightQuery();
                 fq.src = src;
                 fq.dst = dst;
-                fq.date = date;
-                using (new OperationContextScope((IContextChannel)seller.Value))
+                fq.date = DateTime.Parse(date);
+                using (new OperationContextScope((IContextChannel)sellers[seller]))
                 {
                     try
                     {
                         Flights sellerFlights =
-                            seller.Value.GetFlights(fq); // DEAL WITH EXCEPTIONS HERE
+                            sellers[seller].GetFlights(fq); // DEAL WITH EXCEPTIONS HERE
 
                         foreach (var sellerFlight in sellerFlights)
                         {
-                            Flight flight = new Flight();
-                            flight.date = sellerFlight.date;
-                            flight.dst = sellerFlight.dst;
-                            flight.flightNumber = sellerFlight.flightNumber;
-                            flight.price = sellerFlight.price;
-                            flight.seats = sellerFlight.seats;
-                            flight.src = sellerFlight.src;
+                            QueryResultFlight f1 = new QueryResultFlight();
+                            f1.dst = sellerFlight.dst;
+                            f1.src = sellerFlight.src;
+                            f1.seats = sellerFlight.seats;
+                            f1.price = sellerFlight.price;
+                            f1.name = seller;
+                            f1.flightNumber = sellerFlight.flightNumber;
+                            f1.date = sellerFlight.date;
+                            flights.Add(f1);
 
-                            flight.name = seller.Key;
-                            flights.Add(flight);
                         }
 
                     }
                     catch (FaultException e)
                     {
                         FlightSearchServerException fsse = new FlightSearchServerException(e.Reason.ToString());
-                        Console.WriteLine("Seller {0} failed with {1}", seller.Key, e.Reason.ToString());
+                        Console.WriteLine("Seller {0} failed with {1}", seller, e.Reason.ToString());
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine("Seller {0} {1} malfunction: \n{2}", seller.Key, "search", e.Message.ToString());
+                        Console.WriteLine("Seller {0} {1} malfunction: \n{2}", seller, "search", e.Message.ToString());
                         ITicketSellingQueryService victim;
-                        sellers.TryRemove(seller.Key, out victim);
+                        sellers.TryRemove(seller, out victim);
                     }
                 }
             }
+
+            flights.Sort();
+
             return flights;
         }
 
@@ -178,6 +181,11 @@ namespace FlightSearchServerCA
             }
             FlightSearchReservationRequest fsrr = 
                 new FlightSearchReservationRequest();
+
+            // Prepare data
+            fsrr.date = request.date;
+            fsrr.flightNumber = request.flightNumber;
+
             int reservationID = 0;    
             try {
                 reservationID = sellers[seller].MakeReservation(fsrr);
@@ -204,6 +212,15 @@ namespace FlightSearchServerCA
         /// <param name="reservationID">re</param>
         public void CancelReservation(string seller, string reservationID)
         {
+            int resID;
+            try
+            {
+                resID = Convert.ToInt32(reservationID);
+            }
+            catch (FormatException e)
+            {
+                throw new FlightSearchServerException("bad reservation ID: " + e.Message); 
+            }
             if (!sellers.ContainsKey(seller))
             {
                 throw new FlightSearchServerException("unknown seller");
@@ -212,7 +229,7 @@ namespace FlightSearchServerCA
                 new FlightSearchReservationRequest();
             try
             {
-                sellers[seller].CancelReservation(reservationID);
+                sellers[seller].CancelReservation(resID);
             }
             catch (FaultException e)
             {

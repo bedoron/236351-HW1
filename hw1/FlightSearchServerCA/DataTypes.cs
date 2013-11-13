@@ -37,7 +37,7 @@ namespace FlightSearchServerCA
     /// QueryResultFlights.
     /// </summary>
     [DataContract]
-    public class QueryResultFlight
+    public class QueryResultFlight : IComparable
     {
         [DataMember]
         public string name { get; set; }

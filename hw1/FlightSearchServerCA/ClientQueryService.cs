@@ -27,31 +27,17 @@ namespace FlightSearchServerCA
         public QueryResultFlights GetFlights(string src, string dst, string date)
         {
             Console.WriteLine("ClientQueryService: "+dst+" "+src+" "+date);
-            Flights flights = null;
+            QueryResultFlights flights = null;
             try
             {
-                flights = FlightSearchServer.Instance.QueryFlights(src, dst, date);
+                flights = FlightSearchLogic.Instance.QueryFlights(src, dst, date);
             }
             catch (Exception e)
             {
                 WebOperationContext.Current.OutgoingResponse.SetStatusAsNotFound(e.Message);
             }
 
-            QueryResultFlights fs = new QueryResultFlights();
-            foreach (Flight f in flights)
-            {
-                QueryResultFlight f1 = new QueryResultFlight();
-                f1.dst = f.dst;
-                f1.src = f.src;
-                f1.seats = f.seats;
-                f1.name = f.name;
-                f1.flightNumber = f.flightNumber;
-                f1.date = f.date;
-                fs.Add(f1);
-            }
-
-            fs.Sort();
-            return fs;
+            return flights;
         }
 
         /// <summary>
@@ -67,7 +53,7 @@ namespace FlightSearchServerCA
             int reservationID = 0;
             try
             {
-                reservationID = FlightSearchServer.Instance.MakeReservation(seller, request);
+                reservationID = FlightSearchLogic.Instance.MakeReservation(seller, request);
             }
             catch (Exception e)
             {
@@ -89,7 +75,7 @@ namespace FlightSearchServerCA
         {
             try
             {
-                FlightSearchServer.Instance.CancelReservation(seller, CancelReservation);
+                FlightSearchLogic.Instance.CancelReservation(seller, CancelReservation);
             }
             catch (Exception e)
             {

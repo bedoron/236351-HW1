@@ -21,7 +21,7 @@ namespace TicketSellingServer
         
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
-        private string dateField;
+        private System.DateTime dateField;
         
         private string dstField;
         
@@ -40,7 +40,7 @@ namespace TicketSellingServer
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string date
+        public System.DateTime date
         {
             get
             {
@@ -100,8 +100,6 @@ namespace TicketSellingServer
         
         private string flightNumberField;
         
-        private string nameField;
-        
         private int priceField;
         
         private int seatsField;
@@ -156,19 +154,6 @@ namespace TicketSellingServer
             set
             {
                 this.flightNumberField = value;
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string name
-        {
-            get
-            {
-                return this.nameField;
-            }
-            set
-            {
-                this.nameField = value;
             }
         }
         
@@ -283,10 +268,10 @@ public interface ITicketSellingQueryService
     System.Threading.Tasks.Task<int> MakeReservationAsync(TicketSellingServer.FlightSearchReservationRequest request);
     
     [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ITicketSellingQueryService/CancelReservation", ReplyAction="http://tempuri.org/ITicketSellingQueryService/CancelReservationResponse")]
-    void CancelReservation(string reservationID);
+    void CancelReservation(int reservationID);
     
     [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ITicketSellingQueryService/CancelReservation", ReplyAction="http://tempuri.org/ITicketSellingQueryService/CancelReservationResponse")]
-    System.Threading.Tasks.Task CancelReservationAsync(string reservationID);
+    System.Threading.Tasks.Task CancelReservationAsync(int reservationID);
 }
 
 [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -343,12 +328,12 @@ public partial class TicketSellingQueryServiceClient : System.ServiceModel.Clien
         return base.Channel.MakeReservationAsync(request);
     }
     
-    public void CancelReservation(string reservationID)
+    public void CancelReservation(int reservationID)
     {
         base.Channel.CancelReservation(reservationID);
     }
     
-    public System.Threading.Tasks.Task CancelReservationAsync(string reservationID)
+    public System.Threading.Tasks.Task CancelReservationAsync(int reservationID)
     {
         return base.Channel.CancelReservationAsync(reservationID);
     }
