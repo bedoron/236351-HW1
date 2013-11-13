@@ -11,17 +11,39 @@ namespace TicketSellingServer
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public class TicketSellingQueryService : ITicketSellingQueryService
     {
-        private string companyName;
-        static int indexer = 0;
+        /// <summary>
+        /// The name of this seller.
+        /// </summary>
+        private string sellerName;
+
+        /// <summary>
+        /// Static member for reservatiob ID creator
+        /// </summary>
+        static int reservationIdCreator = 0;
+
+        /// <summary>
+        /// List of flights offered by this seller.
+        /// </summary>
         private Flights flights;
+
+        /// <summary>
+        /// List of the reservations that were made with this seller.
+        /// </summary>
         private List<TicketSearchReservation> reservations;
+
+        /// <summary>
+        /// Ctor
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="name"></param>
         public TicketSellingQueryService(string filePath, string name)
         {
-            companyName = name;
+            sellerName = name;
             reservations = new List<TicketSearchReservation>();
             getFlights(filePath);
         }
-        public void getFlights(string filePath){
+        public void getFlights(string filePath)
+        {
             flights = new Flights();
             StreamReader reader = new StreamReader(filePath);
             string line = reader.ReadLine();
@@ -30,7 +52,7 @@ namespace TicketSellingServer
                 Flight flight = new Flight();
                 string[] members = line.Split(' ');
                 flight.flightNumber = members[0];
-                flight.name = companyName;
+                flight.name = sellerName;
                 flight.src = members[1];
                 flight.dst = members[2];
                 flight.date = DateTime.Parse(members[3]);
@@ -39,7 +61,7 @@ namespace TicketSellingServer
                 flights.Add(flight);
                 line = reader.ReadLine();
             }
- 
+
         }
 
 
@@ -65,7 +87,8 @@ namespace TicketSellingServer
 
         public int MakeReservation(FlightSearchReservationRequest request)
         {
-            foreach(Flight flight in flights){
+            foreach (Flight flight in flights)
+            {
                 if (flight.flightNumber.Equals(request.flightNumber) && flight.date.Equals(request.date))
                 {
                     if (flight.seats == 0) throw new FaultException("no seats available");
@@ -73,13 +96,13 @@ namespace TicketSellingServer
                     TicketSearchReservation reservation = new TicketSearchReservation();
                     reservation.flightNumber = request.flightNumber;
                     reservation.date = request.date;
-                    reservation.reservationID = ++indexer;
+                    reservation.reservationID = ++reservationIdCreator;
                     reservations.Add(reservation);
-                    return indexer;
+                    return reservationIdCreator;
                 }
                 throw new FaultException("no such flight");
             }
-            
+
             return 0;
         }
         public void CancelReservation(string reservationID)
