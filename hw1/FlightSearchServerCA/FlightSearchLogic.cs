@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.ServiceModel;
 using System.Text;
@@ -116,6 +117,15 @@ namespace FlightSearchServerCA
         {
             Console.WriteLine("FlightSearchServer: " + dst + " " + src + " " + date);
 
+            try // Sanitize date
+            {
+                DateTime.ParseExact(date, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            }
+            catch (Exception)
+            {
+                throw new FlightSearchServerBadDate();
+            }
+
             QueryResultFlights flights = new QueryResultFlights();
             foreach (var seller in sellers.Keys)
             {
@@ -132,23 +142,14 @@ namespace FlightSearchServerCA
 
                         foreach (var sellerFlight in sellerFlights)
                         {
-                            QueryResultFlight f1 = new QueryResultFlight();
-                            f1.dst = sellerFlight.dst;
-                            f1.src = sellerFlight.src;
-                            f1.seats = sellerFlight.seats;
-                            f1.price = sellerFlight.price;
+                            QueryResultFlight f1 = (QueryResultFlight)sellerFlight;
                             f1.name = seller;
-                            f1.flightNumber = sellerFlight.flightNumber;
-                            f1.date = sellerFlight.date;
                             flights.Add(f1);
-
                         }
-
                     }
                     catch (FaultException e)
                     {
-                        FlightSearchServerException fsse = new FlightSearchServerException(e.Reason.ToString());
-                        Console.WriteLine("Seller {0} failed with {1}", seller, e.Reason.ToString());
+                        Console.WriteLine("Seller {0} failed with {1}, ignoring.", seller, e.Reason.ToString());
                     }
                     catch (Exception e)
                     {
@@ -160,6 +161,11 @@ namespace FlightSearchServerCA
             }
 
             flights.Sort();
+
+            if (0 == flights.Count)
+            {
+                throw new FlightSearchServerEmptyQueryResult();
+            }
 
             return flights;
         }
@@ -177,8 +183,9 @@ namespace FlightSearchServerCA
         {
             if(!sellers.ContainsKey(seller)) 
             {
-                throw new FlightSearchServerException("unknown seller");
+                throw new FlightSearchServerSellerNotFound();
             }
+
             FlightSearchReservationRequest fsrr = 
                 new FlightSearchReservationRequest();
 
@@ -186,19 +193,48 @@ namespace FlightSearchServerCA
             fsrr.date = request.date;
             fsrr.flightNumber = request.flightNumber;
 
-            int reservationID = 0;    
-            try {
-                reservationID = sellers[seller].MakeReservation(fsrr);
-            } 
-            catch(FaultException e) 
+            int reservationID = 0;
+            try
             {
-                throw new FlightSearchServerException(e.Reason.ToString());
-            } 
-            catch(Exception e) 
+                reservationID = sellers[seller].MakeReservation(fsrr);
+            }
+            catch (FaultException e)
+            {
+                //throw new FlightSearchServerException(e.Reason.ToString());
+                /* We should differentiate between two types of error:
+                 * 1. Request wasn't found (no such flight exists) - 404
+                 * 2. Flight is fully booked - 403 ("The server understood the request, but is refusing to fulfill it")
+                 * - Using strings here was worng
+                 */
+                if (e.Reason.ToString().Equals("no such flight"))
+                {
+                    throw new FlightSearchServerFlightNotFound();
+                }
+                else if (e.Reason.ToString().Equals("no seats available"))
+                {
+                    throw new FlightSearchServerNoSeats();
+                }
+                else
+                {
+                    throw new FlightSearchServerException(e.Reason.ToString()); // Legacy
+                }
+            }
+            catch (CommunicationException e) /* This MIGHT look redundant but its NOT, these are different kinds of errors */
+            {
+                Console.WriteLine("==================== Make reservation - BEGIN =====================");
+                Console.WriteLine("Seller {0} Communication error, dropping him from FlightSearch.", seller);
+                Console.WriteLine(e.Message.ToString());
+                Console.WriteLine("==================== Make reservation - END =======================");
+                ITicketSellingQueryService victim;
+                sellers.TryRemove(seller, out victim);
+                throw new FlightSearchServerSellerDropped();
+            }
+            catch (Exception e)
             {
                 Console.WriteLine("Seller {0} {1} malfunction: \n{2}", seller, "Make reservation", e.Message.ToString());
                 ITicketSellingQueryService victim;
                 sellers.TryRemove(seller, out victim);
+                throw new FlightSearchServerSellerDropped();
             }
             return reservationID;
         }
@@ -217,14 +253,15 @@ namespace FlightSearchServerCA
             {
                 resID = Convert.ToInt32(reservationID);
             }
-            catch (FormatException e)
+            catch (FormatException)
             {
-                throw new FlightSearchServerException("bad reservation ID: " + e.Message); 
+                throw new FlightSearchServerReservationMalformed(); //FlightSearchServerException("bad reservation ID: " + e.Message); 
             }
             if (!sellers.ContainsKey(seller))
             {
-                throw new FlightSearchServerException("unknown seller");
+                throw new FlightSearchServerSellerNotFound();
             }
+
             FlightSearchReservationRequest fsrr =
                 new FlightSearchReservationRequest();
             try
@@ -233,13 +270,31 @@ namespace FlightSearchServerCA
             }
             catch (FaultException e)
             {
-                throw new FlightSearchServerException(e.Reason.ToString());
+                if (e.Reason.ToString().Equals("no such reservation"))
+                {
+                    throw new FlightSearchServerReservationNotFound();
+                }
+                else
+                {
+                    throw new FlightSearchServerException(e.Reason.ToString());
+                }
+            }
+            catch (CommunicationException e)
+            {
+                Console.WriteLine("==================== Cancel reservation - BEGIN =====================");
+                Console.WriteLine("Seller {0} Communication error, dropping him from FlightSearch.", seller);
+                Console.WriteLine(e.Message.ToString());
+                Console.WriteLine("==================== Cancel reservation - END =======================");
+                ITicketSellingQueryService victim;
+                sellers.TryRemove(seller, out victim);
+                throw new FlightSearchServerSellerDropped();
             }
             catch (Exception e)
             {
-                Console.WriteLine("Seller {0} {1} malfunction: \n{2}", seller, "Cancel reservation",e.Message.ToString());
+                Console.WriteLine("Seller {0} {1} malfunction: \n{2}", seller, "Cancel reservation", e.Message.ToString());
                 ITicketSellingQueryService victim;
                 sellers.TryRemove(seller, out victim);
+                throw new FlightSearchServerSellerDropped();
             }
         }
 

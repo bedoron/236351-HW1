@@ -26,12 +26,19 @@ namespace FlightSearchServerCA
         /// <returns>List of flights ordered as requested</returns>
         public QueryResultFlights GetFlights(string src, string dst, string date)
         {
+
             Console.WriteLine("ClientQueryService: "+dst+" "+src+" "+date);
             QueryResultFlights flights = null;
             try
             {
                 flights = FlightSearchLogic.Instance.QueryFlights(src, dst, date);
+
             }
+            catch (FlightSearchServerException e)
+            {
+                WebOperationContext.Current.OutgoingResponse.StatusCode = e.StatusCode; //e.StatusCode; // System.Net.HttpStatusCode.NotFound;
+                WebOperationContext.Current.OutgoingResponse.StatusDescription = e.StatusDescription;
+            } 
             catch (Exception e)
             {
                 WebOperationContext.Current.OutgoingResponse.SetStatusAsNotFound(e.Message);
@@ -55,6 +62,11 @@ namespace FlightSearchServerCA
             {
                 reservationID = FlightSearchLogic.Instance.MakeReservation(seller, request);
             }
+            catch (FlightSearchServerException e)
+            {
+                WebOperationContext.Current.OutgoingResponse.StatusCode = e.StatusCode; //e.StatusCode; // System.Net.HttpStatusCode.NotFound;
+                WebOperationContext.Current.OutgoingResponse.StatusDescription = e.StatusDescription;
+            } 
             catch (Exception e)
             {
                 WebOperationContext.Current.OutgoingResponse.SetStatusAsNotFound(e.Message);
@@ -77,6 +89,11 @@ namespace FlightSearchServerCA
             {
                 FlightSearchLogic.Instance.CancelReservation(seller, CancelReservation);
             }
+            catch (FlightSearchServerException e)
+            {
+                WebOperationContext.Current.OutgoingResponse.StatusCode = e.StatusCode; //e.StatusCode; // System.Net.HttpStatusCode.NotFound;
+                WebOperationContext.Current.OutgoingResponse.StatusDescription = e.StatusDescription;
+            } 
             catch (Exception e)
             {
                 WebOperationContext.Current.OutgoingResponse.SetStatusAsNotFound(e.Message);

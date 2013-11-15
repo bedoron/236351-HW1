@@ -73,6 +73,21 @@ namespace FlightSearchServerCA
                 else { return flightNumber.CompareTo(otherFlight.flightNumber); }
             }
         }
+
+
+        public static explicit operator QueryResultFlight(TicketSellingServer.Flight sellerFlight)
+        {
+            QueryResultFlight clientFlight = new QueryResultFlight();
+            clientFlight.dst = sellerFlight.dst;
+            clientFlight.src = sellerFlight.src;
+            clientFlight.seats = sellerFlight.seats;
+            clientFlight.price = sellerFlight.price;
+            clientFlight.name = "UNKNOWN_SELLER_WITH_A_REALLY_REALLY_LONG_NAME_WHICH_NOBODY_CARES_ABOUT";
+            clientFlight.flightNumber = sellerFlight.flightNumber;
+            clientFlight.date = sellerFlight.date;
+
+            return clientFlight;
+        }
     }
 
     
