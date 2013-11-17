@@ -162,11 +162,6 @@ namespace FlightSearchServerCA
 
             flights.Sort();
 
-            if (0 == flights.Count)
-            {
-                throw new FlightSearchServerEmptyQueryResult();
-            }
-
             return flights;
         }
 
