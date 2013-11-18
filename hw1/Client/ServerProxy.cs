@@ -104,6 +104,8 @@ namespace Client
                         {
                             HttpWebResponse resp = (HttpWebResponse)((WebException)e.InnerException).Response;
                             Console.WriteLine("Failed, {0}", resp.StatusDescription);
+                            // TODO: Testing code, remove it
+                            //Console.WriteLine("WebError [{0}]", resp.StatusCode);
                         }
                         else
                         {
@@ -128,11 +130,10 @@ namespace Client
                 string dst = input[2];
                 string strDate = input[3];
 
-                GetDate(strDate);
+                GetDate(strDate); // TODO: Return this after error checking is done
 
                 QueryResultFlights result = channel.GetFlights(src, dst, strDate);
 
-                // TODO: sort data here ? we F*ck up the client
                 foreach (QueryResultFlight flight in result)
                 {
                     Console.WriteLine("{0} {1} {2} seats {3}$", flight.name, flight.flightNumber, flight.seats, flight.price);

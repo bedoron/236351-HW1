@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.ServiceModel;
 using System.ServiceModel.Web;
 using System.Web;
@@ -13,6 +14,13 @@ namespace TicketSellingServer
     {
         static void Main(string[] args)
         {
+
+            if (args.Length != 4)
+            {
+                Console.WriteLine("Bad arguments");
+                Console.WriteLine("TicketSellingServer.exe <port to listen> <search server reg uri> <text data> <seller name>");
+                return;
+            } 
             string url = null;
             // Check the input:
             try
@@ -33,8 +41,18 @@ namespace TicketSellingServer
             TicketSellingQueryLogic.Instance.Initialize(args[2], args[3]);
 
             // Create REST client
-            WebChannelFactory<ITicketSellerRegistration> cf = new WebChannelFactory<ITicketSellerRegistration>(new Uri(url));
-            ITicketSellerRegistration channel = cf.CreateChannel();
+            ITicketSellerRegistration channel;
+            try
+            {
+                WebChannelFactory<ITicketSellerRegistration> cf = new WebChannelFactory<ITicketSellerRegistration>(new Uri(url));
+                channel = cf.CreateChannel();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Couldn't advertise my URI on the flights search server because:");
+                Console.WriteLine(e.Message.ToString());
+                return;
+            }
 
             using (ServiceHost host = new ServiceHost(
                 typeof(TicketSellingQueryService), new Uri(address)))
@@ -50,6 +68,21 @@ namespace TicketSellingServer
                 catch (ProtocolException e)
                 {
                     Console.WriteLine("Bad Protocol: " + e.Message);
+                }
+                catch (Exception e)
+                {
+
+                    if (e.InnerException is WebException)
+                    {
+                        HttpWebResponse resp = (HttpWebResponse)((WebException)e.InnerException).Response;
+                        Console.WriteLine("Failed, {0}", resp.StatusDescription);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Advertisement connection kicked the bucket, quitting because:");
+                        Console.WriteLine(e.Message.ToString());                        
+                    }
+                    return;
                 }
 
                 // Open the service
