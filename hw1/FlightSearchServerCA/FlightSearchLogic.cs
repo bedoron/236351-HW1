@@ -58,11 +58,6 @@ namespace FlightSearchServerCA
         private bool isInitialized = false;
 
         /// <summary>
-        /// Main execution loop variable. program runs as long as this variable is true
-        /// </summary>
-        private bool continueRunning = true;
-
-        /// <summary>
         /// This function will initialize the publishing services. search server will not run if 
         /// those services didn't initialize correctly.
         /// </summary>
@@ -96,11 +91,6 @@ namespace FlightSearchServerCA
                     tsrHost.Close();
                 if (cqsHost != null)
                     cqsHost.Close();
-            }
-            while (continueRunning)
-            {
-                System.Threading.Thread.Sleep(5000);
-                // Maybe do some cleanup on sellers ?
             }
         }
 
