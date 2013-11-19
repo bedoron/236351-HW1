@@ -52,7 +52,7 @@ namespace Client
         }
 
         private void executionLoop() {
-            Console.WriteLine("Enter a command or q to quit");
+            Console.WriteLine("Enter a command or exit to quit");
             do
             {
                 Console.Write(">");
@@ -80,7 +80,7 @@ namespace Client
                         {
                             cancel(parameters);
                         }
-                        else if (command.Equals("q"))
+                        else if (command.Equals("exit"))
                         {
                             return;
                         }
@@ -104,8 +104,6 @@ namespace Client
                         {
                             HttpWebResponse resp = (HttpWebResponse)((WebException)e.InnerException).Response;
                             Console.WriteLine("Failed, {0}", resp.StatusDescription);
-                            // TODO: Testing code, remove it
-                            Console.WriteLine("WebError [{0}]", resp.StatusCode);
                         }
                         else
                         {
@@ -130,7 +128,7 @@ namespace Client
                 string dst = input[2];
                 string strDate = input[3];
 
-                //GetDate(strDate); // TODO: Return this after error checking is done
+                GetDate(strDate); 
 
                 QueryResultFlights result = channel.GetFlights(src, dst, strDate);
 
