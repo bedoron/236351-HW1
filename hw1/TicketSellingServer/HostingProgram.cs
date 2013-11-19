@@ -20,7 +20,7 @@ namespace TicketSellingServer
                 Console.WriteLine("Bad arguments");
                 Console.WriteLine("TicketSellingServer.exe <port to listen> <search server reg uri> <text data> <seller name>");
                 return;
-            } 
+            }
             string url = null;
             // Check the input:
             try
@@ -42,54 +42,63 @@ namespace TicketSellingServer
 
             // Create REST client
             ITicketSellerRegistration channel;
+            //try
+            //{
+
+            //}
+            //catch (Exception e)
+            //{
+            //    Console.WriteLine("Couldn't advertise my URI on the flights search server because:");
+            //    Console.WriteLine(e.Message.ToString());
+            //    return;
+            //}
+
             try
             {
-                WebChannelFactory<ITicketSellerRegistration> cf = new WebChannelFactory<ITicketSellerRegistration>(new Uri(url));
-                channel = cf.CreateChannel();
+                using (ServiceHost host = new ServiceHost(
+                    typeof(TicketSellingQueryService), new Uri(address)))
+                {
+                    // Create SOAP client
+                    host.AddServiceEndpoint(typeof(ITicketSellingQueryService), new BasicHttpBinding(), "TicketSellingQueryService");
+
+                    // Open the service
+
+                    host.Open();
+
+                    try
+                    {
+                        WebChannelFactory<ITicketSellerRegistration> cf = new WebChannelFactory<ITicketSellerRegistration>(new Uri(url));
+                        ITicketSellerRegistration registerChannel = cf.CreateChannel();
+                        // Register the channel in the server
+                        registerChannel.RegisterSeller(new Uri(address), args[3]);
+                        // Keeping the service alive till pressing ENTER
+                        Console.ReadKey();
+                    }
+                    catch (ProtocolException e)
+                    {
+                        Console.WriteLine("Bad Protocol: " + e.Message);
+                    }
+                    catch (Exception e)
+                    {
+
+                        if (e.InnerException is WebException)
+                        {
+                            HttpWebResponse resp = (HttpWebResponse)((WebException)e.InnerException).Response;
+                            Console.WriteLine("Failed, {0}", resp.StatusDescription);
+                        }
+                        else
+                        {
+                            Console.WriteLine("Advertisement connection kicked the bucket, quitting because:");
+                            Console.WriteLine(e.Message.ToString());
+                        }
+                        return;
+                    }
+                }
             }
             catch (Exception e)
             {
-                Console.WriteLine("Couldn't advertise my URI on the flights search server because:");
-                Console.WriteLine(e.Message.ToString());
-                return;
-            }
-
-            using (ServiceHost host = new ServiceHost(
-                typeof(TicketSellingQueryService), new Uri(address)))
-            {
-                // Create SOAP client
-                host.AddServiceEndpoint(typeof(ITicketSellingQueryService), new BasicHttpBinding(), "TicketSellingQueryService");
-
-                try
-                {
-                    // Register the channel in the server
-                    channel.RegisterSeller(new Uri(address), args[3]);
-                }
-                catch (ProtocolException e)
-                {
-                    Console.WriteLine("Bad Protocol: " + e.Message);
-                }
-                catch (Exception e)
-                {
-
-                    if (e.InnerException is WebException)
-                    {
-                        HttpWebResponse resp = (HttpWebResponse)((WebException)e.InnerException).Response;
-                        Console.WriteLine("Failed, {0}", resp.StatusDescription);
-                    }
-                    else
-                    {
-                        Console.WriteLine("Advertisement connection kicked the bucket, quitting because:");
-                        Console.WriteLine(e.Message.ToString());                        
-                    }
-                    return;
-                }
-
-                // Open the service
-                host.Open();
-
-                // Keeping the service alive till pressing ENTER
-                Console.ReadKey();
+                Console.WriteLine("Failed executing because:");
+                Console.WriteLine(e.Message);
             }
         }
     }
