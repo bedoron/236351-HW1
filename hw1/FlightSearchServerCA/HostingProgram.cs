@@ -27,12 +27,18 @@ namespace FlightSearchServerCA
                 return;
             }
 
+            try
+            {
+                FlightSearchLogic fss = FlightSearchLogic.Instance; // DO NOT REMOVE THIS (THREAD CORRECTNESS)
+                fss.Initialize(args[0], args[1]); // Host services
+                fss.run(); // wait till death
 
-            FlightSearchLogic fss = FlightSearchLogic.Instance; // DO NOT REMOVE THIS (THREAD CORRECTNESS)
-            fss.Initialize(args[0], args[1]); // Host services
-            fss.run(); // wait till death
-
-            Console.ReadKey();
+                Console.ReadKey();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Program failed to launch because:" + e.Message);
+            }
         }
     }
 }

@@ -40,19 +40,6 @@ namespace TicketSellingServer
             string address = @"http://localhost:" + args[0] + @"/Services";
             TicketSellingQueryLogic.Instance.Initialize(args[2], args[3]);
 
-            // Create REST client
-            ITicketSellerRegistration channel;
-            //try
-            //{
-
-            //}
-            //catch (Exception e)
-            //{
-            //    Console.WriteLine("Couldn't advertise my URI on the flights search server because:");
-            //    Console.WriteLine(e.Message.ToString());
-            //    return;
-            //}
-
             try
             {
                 using (ServiceHost host = new ServiceHost(

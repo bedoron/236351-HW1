@@ -105,7 +105,7 @@ namespace Client
                             HttpWebResponse resp = (HttpWebResponse)((WebException)e.InnerException).Response;
                             Console.WriteLine("Failed, {0}", resp.StatusDescription);
                             // TODO: Testing code, remove it
-                            //Console.WriteLine("WebError [{0}]", resp.StatusCode);
+                            Console.WriteLine("WebError [{0}]", resp.StatusCode);
                         }
                         else
                         {
@@ -130,7 +130,7 @@ namespace Client
                 string dst = input[2];
                 string strDate = input[3];
 
-                GetDate(strDate); // TODO: Return this after error checking is done
+                //GetDate(strDate); // TODO: Return this after error checking is done
 
                 QueryResultFlights result = channel.GetFlights(src, dst, strDate);
 
@@ -168,7 +168,7 @@ namespace Client
 
         void cancel(string[] input) 
         {
-            if (input.Length == 1) // I have no idea why this is required but I saw it in the excersize manual
+            if (input.Length != 3) // I have no idea why this is required but I saw it in the excersize manual
             {
                 Console.WriteLine("Invalid parameters");
                 Console.WriteLine("cancel <seller> <reservation id>");
@@ -176,11 +176,7 @@ namespace Client
             else
             {
                 string seller = input[1];
-                string reservationID = "";
-                if (input.Length >= 3)
-                {
-                    reservationID = input[2];
-                }
+                string reservationID = input[2];
 
                 channel.CancelReservation(seller, reservationID);
                 Console.WriteLine("OK");                
